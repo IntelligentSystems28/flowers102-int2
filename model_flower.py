@@ -31,7 +31,7 @@ class FlowerModel(nn.Module):
             nn.Flatten(),
             nn.Dropout(0.2),
             # first linear must be image size * image size * last Conv2d out channel
-            nn.Linear(28 * 28 * 128, 1024),
+            nn.Linear(14 * 14 * 128, 1024),
             nn.ReLU(),
             nn.Linear(1024, 512),
             nn.ReLU(),
