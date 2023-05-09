@@ -117,7 +117,7 @@ if load_model:
     new_file_path = input("Input Model to load >> ").strip()
     # Ignore it if it's an empty string, and then try to load the file
     if new_file_path != "":
-        if model_flower.load_model("models/" + new_file_path, model, criterion, optimizer, scheduler):
+        if model_flower.load_state_model("models/" + new_file_path, model, criterion, optimizer, scheduler):
             print("\nUsing model file from " + new_file_path)
         else:
             print("Model failed to load, quitting...")
@@ -130,10 +130,14 @@ print()
 
 ### Train the Model ###
 # Attempt 1 - 12722.4395 seconds, 53% accuracy on the Test Data
-# Attempt 2 -
-validate_steps = len(train_loader) * 10
+# Attempt 2 - 10543.1400 seconds, 52.8% accuracy on the Test Data
+
+# Attempt 3 (LogSoftmax removed) -
+validate_steps = len(train_loader) * 100
 
 model_name = "flower-model"
+model_save_location = "flower-model.pt"
+torch.save(model, model_save_location)
 model_train.train_classifier(model, train_loader, validate_loader, optimizer, criterion,
                              optim_scheduler=scheduler, device_flag=deviceFlag, epochs=epochs,
                              validate_steps=validate_steps, validate_stepped=True,
@@ -144,8 +148,10 @@ print("\n------------------------\n")
 
 
 # Save the final model
-new_file_path = model_flower.save_model(model, criterion, optimizer, scheduler, name=model_name)
-print(f"Final model saved to {new_file_path}.")
+# new_file_path = model_flower.save_model(model, criterion, optimizer, scheduler, name=model_name)
+state_save_location = "flower-model-state.pt"
+model_flower.save_state_model(model, criterion, optimizer, scheduler, state_save_location)
+print(f"Final model saved to {state_save_location}.")
 
 
 ### Test the Model ###

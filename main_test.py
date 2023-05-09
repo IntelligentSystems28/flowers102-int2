@@ -84,7 +84,7 @@ if load_model:
     new_file_path = input("Input Model to load >> ").strip()
     # Ignore it if it's an empty string, and then try to load the file
     if new_file_path != "":
-        if model_flower.load_model("models/" + new_file_path, model, criterion, optimizer, scheduler):
+        if model_flower.load_state_model("models/" + new_file_path, model, criterion, optimizer, scheduler):
             print("\nUsing model file from " + new_file_path)
         else:
             print("Model failed to load, quitting...")

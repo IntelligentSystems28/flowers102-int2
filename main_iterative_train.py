@@ -126,7 +126,7 @@ if load_model:
     new_file_path = input("Input Model to load >> ").strip()
     # Ignore it if it's an empty string, and then try to load the file
     if new_file_path != "":
-        if model_flower.load_model("models/" + new_file_path, model, criterion, optimizer, scheduler):
+        if model_flower.load_state_model("models/" + new_file_path, model, criterion, optimizer, scheduler):
             print("\nUsing model file from " + new_file_path)
         else:
             print("Model failed to load, quitting...")
@@ -184,7 +184,7 @@ while True:
     # If saving the model...
     if save_model and time_after >= train_save_time_next:
         # Save the model
-        new_file_path = model_flower.save_model(model, criterion, optimizer, scheduler, name=model_name)
+        new_file_path = model_flower.save_state_model(model, criterion, optimizer, scheduler, name=model_name)
         print(f"New model saved to {new_file_path}")
         train_saves.append(new_file_path)
         # If the size is now over the limit, delete the file of the first index
@@ -199,8 +199,9 @@ while True:
     print()
 
 # Save the final model
-new_file_path = model_flower.save_model(model, criterion, optimizer, scheduler, name=model_name)
-print(f"Final model saved to {new_file_path}.")
+final_file_path = "models/" + model_name + ".pt"
+torch.save(model, final_file_path)
+print(f"Final model saved to {final_file_path}.")
 
 # %%
 ### Test the Model ###

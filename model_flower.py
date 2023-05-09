@@ -73,8 +73,7 @@ class FlowerModel(nn.Module):
             nn.BatchNorm1d(512),
             nn.Dropout(0.5),
             nn.ReLU(),
-            nn.Linear(512, num_classes),
-            nn.LogSoftmax(dim=1)
+            nn.Linear(512, num_classes)
         )
 
     def forward(self, x):
@@ -84,7 +83,7 @@ class FlowerModel(nn.Module):
         return out
 
 
-def save_model(model, criterion, optimizer, scheduler, name="model"):
+def save_state_model(model, criterion, optimizer, scheduler, file_path):
     save_data = {
         "learning_rate": optimizer.param_groups[0]['lr'],
         "model": model.state_dict(),
@@ -93,12 +92,11 @@ def save_model(model, criterion, optimizer, scheduler, name="model"):
         "scheduler": scheduler.state_dict()
     }
 
-    file_path = f"models/{name}-{str(datetime.datetime.now()).replace(':', '-')}.pt"
     torch.save(save_data, file_path)
     return file_path
 
 
-def load_model(file_path: str, model: nn.Module, criterion, optimizer, scheduler):
+def load_state_model(file_path: str, model: nn.Module, criterion=None, optimizer=None, scheduler=None):
     # Try to load the file, only if it exists
     if os.path.exists(file_path):
         # Try to load everything
@@ -106,8 +104,11 @@ def load_model(file_path: str, model: nn.Module, criterion, optimizer, scheduler
 
         # If it did successfully, load them to the model and return true
         model.load_state_dict(file_data["model"])
-        criterion.load_state_dict(file_data["criterion"])
-        optimizer.load_state_dict(file_data["optimizer"])
-        scheduler.load_state_dict(file_data["scheduler"])
+        if criterion is not None:
+            criterion.load_state_dict(file_data["criterion"])
+        if optimizer is not None:
+            optimizer.load_state_dict(file_data["optimizer"])
+        if scheduler is not None:
+            scheduler.load_state_dict(file_data["scheduler"])
         return True
     return False
