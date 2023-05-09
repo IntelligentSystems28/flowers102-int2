@@ -14,11 +14,11 @@ import time
 ### Set up variables ###
 tr_batchsize = 16  # The size of the training batches
 val_test_batchsize = 16  # The size of the validation / testing batches
-epochs = 10  # The number of epochs to do
-validate_steps = 750  # The number of steps to complete before validation
-learning_rate = 0.0001  # The learning rate to start at
-load_model = True  # If a model should be requested to be loaded, or not
-save_model = True  # If the model should be saved after testing, or not
+epochs = 600  # The number of epochs to do
+# This is set down below, to go off every 10 epochs
+validate_steps = None  # The number of steps to complete before validation
+learning_rate = 0.0001  # The learning rate to start at for a new model
+load_model = False  # If a model should be requested to be loaded, or not
 
 # %%
 # By default, set to use the CPU
@@ -90,32 +90,23 @@ test_loader = torch.utils.data.DataLoader(dataset=test_dataset,
                                           batch_size=val_test_batchsize)
 
 # %%
-loaded_file = False
-
 print("Creating Model...")
 model = model_flower.FlowerModel()
 print("Model created. Moving the Model to " + deviceFlag.type + "...")
 model.to(deviceFlag)
 print("Moved the Model to " + deviceFlag.type + ".")
 
-
-
-# %%
-# Negative Log Likelihood Loss
-# criterion = nn.NLLLoss()
+### Create the Criterion and Optimizer ###
 
 # Cross Entropy Loss
 criterion = nn.CrossEntropyLoss()
 
-# optimizer 1
+# Adam Optimizer
 optimizer = optim.Adam(model.parameters(), lr=learning_rate)
 
-# optimizer 2
-# optimizer = torch.optim.SGD(model.parameters(), lr=lr, weight_decay = 0.005, momentum = 0.9)
-
-
-# %%
-# Scheduler
+### Create the Scheduler ###
+# A step scheduler that decreases the learning rate every 500
+# steps by x0.99
 scheduler = lr_scheduler.StepLR(optimizer, 500, 0.99)
 
 
@@ -136,72 +127,27 @@ if load_model:
 
 print()
 
-# %%
+
 ### Train the Model ###
+# Attempt 1 - 12722.4395 seconds, 53% accuracy on the Test Data
+# Attempt 2 -
+validate_steps = len(train_loader) * 10
 
-train_time_start = time.time()
-train_time_end = train_time_start + 60 * 60 * 5  # Last number is number of hours of training.
+model_name = "flower-model"
+model_train.train_classifier(model, train_loader, validate_loader, optimizer, criterion,
+                             optim_scheduler=scheduler, device_flag=deviceFlag, epochs=epochs,
+                             validate_steps=validate_steps, validate_stepped=True,
+                             validate_epoch=False, validate_end=True
+                             )
 
-train_save_time_gap = 60 * 30  # Save every half hour (when the training for a set of epochs is done)
-train_save_time_next = train_time_start + train_save_time_gap  # Set the first save time
-train_save_max = 5  # The maximum number of models to save
-train_saves = []
+print("\n------------------------\n")
 
-model_name = "model"
-batches_done = 0
-
-train_iteration = 0
-train_iter_time_total = 0
-
-while True:
-    time_before = time.time()
-    print("Iteration [{}] of training. {:.3f}s have passed since the start.".format(train_iteration + 1,
-                                                                                    time_before - train_time_start))
-    if train_iteration > 0:
-        print("{} Batches complete total. Average of {:.3f}s per iteration.".format(
-            batches_done, train_iter_time_total / train_iteration)
-        )
-    print()
-
-    ### TRAIN THE MODEL###
-    batches_done += model_train.train_classifier(model, train_loader, validate_loader, optimizer, criterion,
-                                                 optim_scheduler=scheduler, device_flag=deviceFlag, epochs=epochs,
-                                                 validate_steps=validate_steps, validate_stepped=False,
-                                                 validate_epoch=False, validate_end=True,
-                                                 end_time=train_time_end,
-                                                 time_start=train_time_start, epochs_start=epochs*train_iteration,
-                                                 batches_start=batches_done
-                                                 )
-    print()
-
-    time_after = time.time()
-    # Check if there's no time left
-    if time_after >= train_time_end:
-        break
-
-    train_iter_time_total += time_after - time_before
-
-    # If saving the model...
-    if save_model and time_after >= train_save_time_next:
-        # Save the model
-        new_file_path = model_flower.save_model(model, criterion, optimizer, scheduler, name=model_name)
-        print(f"New model saved to {new_file_path}")
-        train_saves.append(new_file_path)
-        # If the size is now over the limit, delete the file of the first index
-        if len(train_saves) > train_save_max:
-            file_path = train_saves.pop(0)
-            if os.path.exists(file_path):
-                os.remove(file_path)
-        # And then update the next time to save
-        train_save_time_next += train_save_time_gap
-
-    train_iteration += 1
-    print()
 
 # Save the final model
 new_file_path = model_flower.save_model(model, criterion, optimizer, scheduler, name=model_name)
 print(f"Final model saved to {new_file_path}.")
 
-# %%
+
 ### Test the Model ###
+print("\n")
 model_test.test_accuracy(model, test_loader, device_flag=deviceFlag)
