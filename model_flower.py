@@ -48,8 +48,13 @@ class FlowerModel(nn.Module):
 
             nn.Conv2d(256, 256, kernel_size=3, stride=1, padding=1),
             nn.BatchNorm2d(256),
+            nn.AvgPool2d(kernel_size=2),
             nn.ReLU(),
-            nn.MaxPool2d(kernel_size=2, stride=2)
+
+            nn.Conv2d(256, 256, kernel_size=3, stride=1, padding=1),
+            nn.BatchNorm2d(256),
+            nn.ReLU(),
+            nn.MaxPool2d(kernel_size=2, stride=2),
         )
 
         self.fc = nn.Sequential(
@@ -67,6 +72,7 @@ class FlowerModel(nn.Module):
             nn.Linear(1024, 512),
 
             nn.BatchNorm1d(512),
+            nn.Dropout(0.5),
             nn.ReLU(),
             nn.Linear(512, num_classes),
             nn.LogSoftmax(dim=1)

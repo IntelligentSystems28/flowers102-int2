@@ -34,7 +34,7 @@ def train_classifier(model, train_loader, validate_loader, optimizer, criterion,
         print("Must run at least 1 epoch")
         return 0
 
-    steps = batches_start
+    steps = 0
 
     model.to(device_flag)
 
@@ -64,7 +64,7 @@ def train_classifier(model, train_loader, validate_loader, optimizer, criterion,
             iter_text = "{} {} / {} - {:.3f}% complete, {} Batches completed.".format(epoch_text, running_done,
                                                                                       running_total,
                                                                                       (running_done / running_total) * 100,
-                                                                                      steps)
+                                                                                      steps + batches_start)
             print(f"\r{iter_text}", end="")
 
             # Check if we're out of time
@@ -113,7 +113,7 @@ def train_classifier(model, train_loader, validate_loader, optimizer, criterion,
 
         time_now = time.time()
         finish_text = epoch_text + " Epoch {} completed on Batch {} in {:.4f} seconds ({:.4f} in total) ".format(e + 1,
-                                                                                                                 steps,
+                                                                                                                 steps + batches_start,
                                                                                                                  time_now - epoch_start,
                                                                                                                  time_now - start_time)
         if validate_epoch:

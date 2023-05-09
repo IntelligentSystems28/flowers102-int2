@@ -142,7 +142,7 @@ print()
 train_time_start = time.time()
 train_time_end = train_time_start + 60 * 60 * 6  # Last number is number of hours of training.
 
-train_save_time_gap = 60 * 30  # Save every hour (when the training for a set of epochs is done)
+train_save_time_gap = 60 * 30  # Save every half hour (when the training for a set of epochs is done)
 train_save_time_next = train_time_start + train_save_time_gap  # Set the first save time
 train_save_max = 5  # The maximum number of models to save
 train_saves = []
@@ -162,7 +162,6 @@ while True:
             batches_done, train_iter_time_total / train_iteration)
         )
     print()
-    iter_start = time_before
 
     ### TRAIN THE MODEL###
     batches_done += model_train.train_classifier(model, train_loader, validate_loader, optimizer, criterion,
@@ -179,7 +178,7 @@ while True:
     if time_after >= train_time_end:
         break
 
-    train_iter_time_total += time.time() - iter_start
+    train_iter_time_total += time_after - time_before
 
     # If saving the model...
     if save_model and time_after >= train_save_time_next:
