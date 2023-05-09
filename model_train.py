@@ -99,11 +99,11 @@ def train_classifier(model, train_loader, validate_loader, optimizer, criterion,
             running_done += images.size(0)
 
             if validate_stepped:
-                # If not on last step, and on print step
-                if (steps != len(train_loader)) and steps % validate_steps == 0:
+                # If not on last step when end validation is enabled, and on print step
+                if (steps < epochs * len(train_loader) and validate_end) and steps % validate_steps == 0:
                     # If validating epoch, then mention that stepped validate has been
                     # pushed back.
-                    if validate_epoch and steps % epochs == 0:
+                    if validate_epoch and steps % len(train_loader) == 0:
                         print(f"\r{epoch_text}Stepped validation intersected with Epoch validation, trying again in "
                               f"another {validate_steps} batches...")
                     else:
