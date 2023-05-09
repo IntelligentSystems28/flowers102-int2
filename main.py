@@ -136,7 +136,7 @@ print()
 validate_steps = len(train_loader) * 100
 
 model_name = "flower-model"
-model_save_location = "flower-model.pt"
+model_save_location = f"{model_name}.pt"
 torch.save(model, model_save_location)
 model_train.train_classifier(model, train_loader, validate_loader, optimizer, criterion,
                              optim_scheduler=scheduler, device_flag=deviceFlag, epochs=epochs,
@@ -149,7 +149,7 @@ print("\n------------------------\n")
 
 # Save the final model
 # new_file_path = model_flower.save_model(model, criterion, optimizer, scheduler, name=model_name)
-state_save_location = "flower-model-state.pt"
+state_save_location = f"{model_name}-state.pt"
 model_flower.save_state_model(model, criterion, optimizer, scheduler, state_save_location)
 print(f"Final model saved to {state_save_location}.")
 
