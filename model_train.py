@@ -28,7 +28,7 @@ def train_classifier(model, train_loader, validate_loader, optimizer, criterion,
                      optim_scheduler=None, device_flag="cpu", epochs=10,
                      validate_steps=100, validate_stepped=True, validate_epoch=False, validate_end=False,
                      end_time=None,
-                     epochs_start=0, batches_start=0):
+                     time_start=None, epochs_start=0, batches_start=0):
 
     if epochs <= 0:
         print("Must run at least 1 epoch")
@@ -40,7 +40,11 @@ def train_classifier(model, train_loader, validate_loader, optimizer, criterion,
 
     running_total = len(train_loader.dataset)
 
-    start_time = time.time()
+    if time_start is None:
+        start_time = time.time()
+    else:
+        start_time = time_start
+
     running_loss = 0
 
     if validate_end and validate_epoch:
@@ -130,7 +134,7 @@ def train_classifier(model, train_loader, validate_loader, optimizer, criterion,
 
     print("\nTraining Complete in {:.4f} seconds.".format(time.time() - start_time))
     if validate_end:
-        print(f"\nValidation of all {steps} Batches:")
+        print(f"\nValidation of all {steps + batches_start} Batches:")
         train_output_validation(model, validate_loader, criterion, total_running_loss / steps,
                                 last_length=len(iter_text),
                                 device_flag=device_flag)
