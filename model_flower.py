@@ -1,3 +1,6 @@
+import torch
+import datetime
+import os
 import torch.nn as nn
 
 
@@ -44,3 +47,32 @@ class FlowerModel(nn.Module):
 
         out = self.fc(out)
         return out
+
+
+def save_model(model, criterion, optimizer, scheduler, name="model"):
+    save_data = {
+        "learning_rate": optimizer.param_groups[0]['lr'],
+        "model": model.state_dict(),
+        "criterion": criterion.state_dict(),
+        "optimizer": optimizer.state_dict(),
+        "scheduler": scheduler.state_dict()
+    }
+
+    file_path = f"models/{name}-{str(datetime.datetime.now()).replace(':', '-')}.pt"
+    torch.save(save_data, file_path)
+    return file_path
+
+
+def load_model(file_path: str, model: nn.Module, criterion, optimizer, scheduler):
+    # Try to load the file, only if it exists
+    if os.path.exists(file_path):
+        # Try to load everything
+        file_data = torch.load(file_path)
+
+        # If it did successfully, load them to the model and return true
+        model.load_state_dict(file_data["model"])
+        criterion.load_state_dict(file_data["criterion"])
+        optimizer.load_state_dict(file_data["optimizer"])
+        scheduler.load_state_dict(file_data["scheduler"])
+        return True
+    return False
