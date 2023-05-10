@@ -38,8 +38,7 @@ print("Model state loaded.")
 model.to(deviceFlag)
 
 # Get the location of the image to predict
-image_loc = "images/image_00405.jpg"
-image_loc = "dataset/flowers-102/jpg/image_07318.jpg"
+image_loc = "dataset/flowers-102/jpg/image_00442.jpg"
 
 # Load the image and convert it into a pyTorch Tensor
 print(f"Loading the '{image_loc}' Image...")
