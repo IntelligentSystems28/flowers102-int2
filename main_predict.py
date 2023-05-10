@@ -79,13 +79,13 @@ if torch.cuda.is_available():
 probabilities = probabilities.detach().numpy()
 labels = labels.detach().numpy()
 
-print("The most likely flower for this to be is a {} with a {:.3f}% probability ".format(
+print("The most likely flower for this to be is a {} with a {:.3f} likelihood ".format(
     class_data[str(labels[0][0])], probabilities[0][0]
 ))
 
 print("The next 4 most likely flowers for this to be are:")
 for i in range(1,len(probabilities[0])):
-    print("{} with a {:.3f}% probability.".format(
+    print("{} with a {:.3f} likelihood.".format(
         class_data[str(labels[0][i])],
         probabilities[0][i]
     ))
