@@ -5,6 +5,12 @@ import torchvision.transforms as transforms
 import model_flower
 import json
 
+######
+# The location of the image to predict
+image_loc = "dataset/flowers-102/jpg/image_00442.jpg"
+
+######
+
 # By default, set to use the CPU
 deviceFlag = torch.device('cpu')
 
@@ -36,9 +42,6 @@ model_flower.load_state_model("models/flower-model-2023-05-09 22-10-23.281734.pt
 print("Model state loaded.")
 # Move it to the correct device
 model.to(deviceFlag)
-
-# Get the location of the image to predict
-image_loc = "dataset/flowers-102/jpg/image_00442.jpg"
 
 # Load the image and convert it into a pyTorch Tensor
 print(f"Loading the '{image_loc}' Image...")
