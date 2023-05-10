@@ -8,8 +8,6 @@ from torchvision import datasets, transforms
 import model_flower
 import model_train
 import model_test
-import os
-import time
 
 ### Set up variables ###
 tr_batchsize = 16  # The size of the training batches
