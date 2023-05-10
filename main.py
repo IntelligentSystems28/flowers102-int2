@@ -17,6 +17,7 @@ epochs = 600  # The number of epochs to do
 validate_steps = 1600  # The number of steps to complete before validation
 learning_rate = 0.0001  # The learning rate to start at for a new model
 load_model = False  # If a model should be requested to be loaded, or not
+model_name = "flower-model"
 
 # %%
 # By default, set to use the CPU
@@ -131,7 +132,6 @@ print()
 # Attempt 2 - 10543.1400 seconds, 52.8% accuracy on the Test Data
 # Attempt 3 - 10359.2405 seconds, 54.4% accuracy on the Test Data
 
-model_name = "flower-model"
 model_save_location = f"{model_name}.pt"
 torch.save(model, model_save_location)
 model_train.train_classifier(model, train_loader, validate_loader, optimizer, criterion,
