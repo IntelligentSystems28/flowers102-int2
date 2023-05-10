@@ -32,14 +32,14 @@ model.eval()
 
 # Load the state of the entire model
 print("Loading the Model's state...")
-model_flower.load_state_model("models/flower-model-2023-05-09 22-10-23.281734.pt.pt", model)
+model_flower.load_state_model("models/flower-model-2023-05-09 22-10-23.281734.pt", model)
 print("Model state loaded.")
 # Move it to the correct device
 model.to(deviceFlag)
 
 # Get the location of the image to predict
 image_loc = "images/image_00405.jpg"
-image_loc = "dataset/flowers-102/jpg/image_00181.jpg"
+image_loc = "dataset/flowers-102/jpg/image_07318.jpg"
 
 # Load the image and convert it into a pyTorch Tensor
 print(f"Loading the '{image_loc}' Image...")
@@ -78,12 +78,12 @@ probabilities = probabilities.detach().numpy()
 labels = labels.detach().numpy()
 
 print("The most likely flower for this to be is a {} with a {:.3f}% probability ".format(
-    class_data[str(labels[0][0])], probabilities[0][0] * 100
+    class_data[str(labels[0][0])], probabilities[0][0]
 ))
 
 print("The next 4 most likely flowers for this to be are:")
 for i in range(1,len(probabilities[0])):
     print("{} with a {:.3f}% probability.".format(
         class_data[str(labels[0][i])],
-        probabilities[0][i] * 100
+        probabilities[0][i]
     ))
