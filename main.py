@@ -16,7 +16,7 @@ tr_batchsize = 16  # The size of the training batches
 val_test_batchsize = 16  # The size of the validation / testing batches
 epochs = 600  # The number of epochs to do
 # This is set down below, to go off every 10 epochs
-validate_steps = None  # The number of steps to complete before validation
+validate_steps = 1600  # The number of steps to complete before validation
 learning_rate = 0.0001  # The learning rate to start at for a new model
 load_model = False  # If a model should be requested to be loaded, or not
 
@@ -131,9 +131,7 @@ print()
 ### Train the Model ###
 # Attempt 1 - 12722.4395 seconds, 53% accuracy on the Test Data
 # Attempt 2 - 10543.1400 seconds, 52.8% accuracy on the Test Data
-
-# Attempt 3 (LogSoftmax removed) -
-validate_steps = len(train_loader) * 100
+# Attempt 3 - 10359.2405 seconds, 54.4% accuracy on the Test Data
 
 model_name = "flower-model"
 model_save_location = f"{model_name}.pt"
